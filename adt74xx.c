@@ -57,13 +57,13 @@ adt74xx_device_t adt74xx_init(const char *i2c_bus_name, rt_uint8_t adt74xx_addr)
     }
 
     // clear the status register
-    atd7422_clear_status(dev);
+    adt74xx_clear_status(dev);
     // read config
     adt74xx_read_config(dev);
     return dev;
 }
 
-void atd7422_deinit(adt74xx_device_t dev)
+void adt74xx_deinit(adt74xx_device_t dev)
 {
     RT_ASSERT(dev);
 
@@ -72,18 +72,18 @@ void atd7422_deinit(adt74xx_device_t dev)
     rt_free(dev);
 }
 
-// 鍐欏崟涓瘎瀛樺櫒
-//reg: 瀵勫瓨鍣ㄥ湴鍧�
-//data: 鏁版嵁
-// 杩斿洖鍊�: 0, 姝ｅ父 / -1, 閿欒浠ｇ爜
+// 写单个寄存器
+//reg: 寄存器地址
+//data: 数据
+// 返回值: 0, 正常 / -1, 错误代码
 static rt_err_t adt74xx_write_reg(adt74xx_device_t dev, rt_uint8_t reg, rt_uint8_t data)
 {
     struct rt_i2c_msg msgs;
     rt_uint8_t buf[2] = { reg, data };
 
-    msgs.addr = dev->adt74xx_addr; /* 浠庢満鍦板潃 */
-    msgs.flags = RT_I2C_WR; /* 鍐欐爣蹇� */
-    msgs.buf = buf; /* 鍙戦�佹暟鎹寚閽� */
+    msgs.addr = dev->adt74xx_addr; /* 从机地址 */
+    msgs.flags = RT_I2C_WR; /* 写标志 */
+    msgs.buf = buf; /* 发送数据指针 */
     msgs.len = 2;
 
     if (rt_i2c_transfer(dev->i2c, &msgs, 1) == 1)
@@ -96,24 +96,24 @@ static rt_err_t adt74xx_write_reg(adt74xx_device_t dev, rt_uint8_t reg, rt_uint8
     }
 }
 
-// 璇诲彇瀵勫瓨鍣ㄦ暟鎹�
-//reg: 瑕佽鍙栫殑瀵勫瓨鍣ㄥ湴鍧�
-//len: 瑕佽鍙栫殑鏁版嵁瀛楄妭鏁�
-//buf: 璇诲彇鍒扮殑鏁版嵁瀛樺偍鍖�
-// 杩斿洖鍊�: 0, 姝ｅ父 / -1, 閿欒浠ｇ爜
+// 读取寄存器数据
+//reg: 要读取的寄存器地址
+//len: 要读取的数据字节数
+//buf: 读取到的数据存储区
+// 返回值: 0, 正常 / -1, 错误代码
 static rt_err_t adt74xx_read_reg(adt74xx_device_t dev, rt_uint8_t reg, rt_uint8_t *buf, rt_uint8_t len)
 {
     struct rt_i2c_msg msgs[2];
 
-    msgs[0].addr = dev->adt74xx_addr; /* 浠庢満鍦板潃 */
-    msgs[0].flags = RT_I2C_WR; /* 鍐欐爣蹇� */
-    msgs[0].buf = &reg; /* 浠庢満瀵勫瓨鍣ㄥ湴鍧� */
-    msgs[0].len = 1; /* 鍙戦�佹暟鎹瓧鑺傛暟 */
+    msgs[0].addr = dev->adt74xx_addr;  /* 从机地址 */
+    msgs[0].flags = RT_I2C_WR;  /* 写标志 */
+    msgs[0].buf = &reg;  /* 从机寄存器地址 */
+    msgs[0].len = 1; /* 发送数据字节数 */
 
-    msgs[1].addr = dev->adt74xx_addr; /* 浠庢満鍦板潃 */
-    msgs[1].flags = RT_I2C_RD; /* 璇绘爣蹇� */
-    msgs[1].buf = buf; /* 璇诲彇鏁版嵁鎸囬拡 */
-    msgs[1].len = len; /* 璇诲彇鏁版嵁瀛楄妭鏁� */
+    msgs[1].addr = dev->adt74xx_addr; /* 从机地址 */
+    msgs[1].flags = RT_I2C_RD; /* 读标志 */
+    msgs[1].buf = buf;  /* 读取数据指针 */
+    msgs[1].len = len; /* 读取数据字节数 */
 
     if (rt_i2c_transfer(dev->i2c, msgs, 2) == 2)
     {
@@ -125,7 +125,7 @@ static rt_err_t adt74xx_read_reg(adt74xx_device_t dev, rt_uint8_t reg, rt_uint8_
     }
 }
 
-rt_err_t atd7422_clear_status(adt74xx_device_t dev)
+rt_err_t adt74xx_clear_status(adt74xx_device_t dev)
 {
     dev->status.word = 0x00;
     //dev->status.status_bits.RDY=1;
@@ -241,7 +241,7 @@ void adt74xx(int argc, char *argv[])
                     if (dev)
                     {
                         rt_kprintf("Deinit adt74xx");
-                        atd7422_deinit(dev);
+                        adt74xx_deinit(dev);
                     }
                     // no else needed here
                     if (argc > 3)

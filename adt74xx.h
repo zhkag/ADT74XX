@@ -100,7 +100,7 @@ typedef struct adt74xx_device *adt74xx_device_t;
 adt74xx_device_t adt74xx_init(const char *i2c_bus_name, rt_uint8_t adt74xx_addr);
 rt_err_t adt74xx_read_status(adt74xx_device_t dev);
 rt_err_t adt74xx_read_temperature(adt74xx_device_t dev);
-void atd7422_deinit(adt74xx_device_t dev);
-rt_err_t atd7422_clear_status(adt74xx_device_t dev);
+void adt74xx_deinit(adt74xx_device_t dev);
+rt_err_t adt74xx_clear_status(adt74xx_device_t dev);
 rt_err_t adt74xx_read_config(adt74xx_device_t dev);
 #endif /* APPLICATIONS_adt74xx_H_ */

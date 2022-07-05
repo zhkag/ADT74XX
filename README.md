@@ -37,9 +37,7 @@ RT-Thread online packages
 ## 3、使用 adt74xx
 
 本驱动实现基于RT-Thread的I2C设备驱动框架，在打开 adt74xx package 后，请务必打开至少1个I2C设备。
-
-* 完整的 API 手册可以访问这个[链接](docs/api.md)
-* 更多文档位于 [`/docs`](/docs) 下，使用前 **务必查看**
+ 
 
 ## 4、注意事项
 

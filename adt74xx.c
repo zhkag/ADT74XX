@@ -179,7 +179,7 @@ rt_err_t adt74xx_read_config(adt74xx_device_t dev)
     }
     return ret;
 }
-static uint16_t swapShort16(uint16_t shortValue)
+static rt_uint16_t swapShort16(rt_uint16_t shortValue)
 {
     return ((shortValue & 0x00FF) << 8) | ((shortValue & 0xFF00) >> 8);
 }
@@ -187,8 +187,8 @@ rt_err_t adt74xx_read_temperature(adt74xx_device_t dev)
 {
     rt_err_t ret = RT_ERROR;
     RT_ASSERT(dev);
-    uint16_t temp = 0;
-    uint16_t temp1 = 0;
+    rt_uint16_t temp = 0;
+    rt_uint16_t temp1 = 0;
        float temp_c = 0;
     if (adt74xx_read_reg(dev, adt74xx_REG_TEMPMSB, (rt_uint8_t*) &temp1, 2) == RT_EOK)
     {
@@ -197,7 +197,7 @@ rt_err_t adt74xx_read_temperature(adt74xx_device_t dev)
         if(dev->config.config_bits.res) {
                 if(temp & 0x8000)
                     /*! Negative temperature */
-                    temp_c = (float)((int32_t)temp - 65536) / 128;
+                    temp_c = (float)((rt_int32_t)temp - 65536) / 128;
                 else
                     /*! Positive temperature */
                     temp_c = (float)temp / 128;
@@ -205,7 +205,7 @@ rt_err_t adt74xx_read_temperature(adt74xx_device_t dev)
                 temp >>= 3;
                 if(temp & 0x1000)
                     /*! Negative temperature */
-                    temp_c = (float)((int32_t)temp - 8192) / 16;
+                    temp_c = (float)((rt_int32_t)temp - 8192) / 16;
                 else
                     /*! Positive temperature */
                     temp_c = (float)temp / 16;

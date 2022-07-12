@@ -14,7 +14,7 @@
 #define DBG_COLOR
 #include <rtdbg.h>
 #include "adt74xx.h"
-#define CRC_POLY 0x31
+
 
 adt74xx_device_t adt74xx_init(const char *i2c_bus_name, rt_uint8_t adt74xx_addr)
 {
